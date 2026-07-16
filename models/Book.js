@@ -1,46 +1,12 @@
-const express = require("express");
-const router  = express.Router();
-const Book    = require("../models/Book");
+const mongoose = require("mongoose");
 
-// GET /books
-router.get("/", async (req, res) => {
-  try {
-    const books = await Book.find().sort({ createdAt: -1 });
-    res.json(books);
-  } catch (err) {
-    res.json({ error: err.message });
-  }
-});
+const BookSchema = new mongoose.Schema({
+  title:     { type: String, required: true },
+  author:    { type: String, required: true },
+  category:  { type: String, enum: ["100L", "200L", "300L", "400L", "500L"], required: true },
+  pdf_url:   { type: String, default: "" },
+  available: { type: Number, default: 1 },
+  addedBy:   { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+}, { timestamps: true });
 
-// POST /books
-router.post("/", async (req, res) => {
-  const { userId, title, author, category, pdf_url, available } = req.body;
-  try {
-    const book = await Book.create({ title, author, category, pdf_url, available, addedBy: userId });
-    res.json(book);
-  } catch (err) {
-    res.json({ error: err.message });
-  }
-});
-
-// PUT /books/:id
-router.put("/:id", async (req, res) => {
-  try {
-    const book = await Book.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    res.json(book);
-  } catch (err) {
-    res.json({ error: err.message });
-  }
-});
-
-// DELETE /books/:id
-router.delete("/:id", async (req, res) => {
-  try {
-    await Book.findByIdAndDelete(req.params.id);
-    res.json({ success: true });
-  } catch (err) {
-    res.json({ error: err.message });
-  }
-});
-
-module.exports = router;
+module.exports = mongoose.model("Book", BookSchema);
