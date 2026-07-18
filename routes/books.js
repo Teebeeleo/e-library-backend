@@ -1,5 +1,5 @@
 const express = require("express");
-const router  = express.Router();
+const router  = require("express").Router();
 const Book    = require("../models/Book");
 
 // GET /books
@@ -14,9 +14,17 @@ router.get("/", async (req, res) => {
 
 // POST /books
 router.post("/", async (req, res) => {
-  const { userId, title, author, category, pdf_url, available } = req.body;
+  const { userId, title, author, category, pdf_url, cover_url, available } = req.body;
   try {
-    const book = await Book.create({ title, author, category, pdf_url, available, addedBy: userId });
+    const book = await Book.create({
+      title,
+      author,
+      category,
+      pdf_url,
+      cover_url,
+      available,
+      addedBy: userId,
+    });
     res.json(book);
   } catch (err) {
     res.json({ error: err.message });
