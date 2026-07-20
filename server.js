@@ -8,14 +8,15 @@ const app = express();
 connectDB();
 
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: "10mb" }));
 
 app.use("/auth",      require("./routes/auth"));
 app.use("/books",     require("./routes/books"));
 app.use("/favorites", require("./routes/favorites"));
 app.use("/downloads", require("./routes/downloads"));
 app.use("/stats",     require("./routes/stats"));
-app.use("/users",     require("./routes/users"));
+app.use("/users",         require("./routes/users"));
+app.use("/notifications", require("./routes/notifications"));
 
 app.get("/", (req, res) => res.json({ message: "E-Library API running" }));
 
